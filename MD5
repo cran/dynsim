@@ -1,0 +1,11 @@
+dee88d21ccc97f565c44eeffe7bebcc1 *DESCRIPTION
+96c54af3bced54f645d82840fd0ab876 *NAMESPACE
+d95742b7b6746ccb5aaa4e51bda63939 *R/dynsim.R
+fe67b2268adf262ebee95bb8919cc2bd *R/dynsimGG.R
+a38e06a2438aad56e55c44c25b4e9272 *R/grunfeld.R
+4558c7c5cd851214afa656de517a7fd3 *R/utils.R
+595d79775dd091a63a2901757775fb24 *README.md
+9ed00398edc6f3f82dfee0da28d3d62d *data/grunfeld.tab.gz
+1b15cb732404c933c8268b624d8d8862 *man/dynsim.Rd
+199209abcc2c70a70414c42f6ef6ec24 *man/dynsimGG.Rd
+f9f13476ef9837f79a0ec9d8bf3b035e *man/grunfeld.Rd
