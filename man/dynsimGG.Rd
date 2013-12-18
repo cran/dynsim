@@ -1,14 +1,14 @@
 \name{dynsimGG}
 \alias{dynsimGG}
-\title{Plot dynamic simulation results}
+\title{Plot dynamic simulation results from \code{dynsim}}
 \usage{
-  dynsimGG(obj, lsize = 1, color = NULL, alpha = 0.5,
-    xlab = "\nTime", ylab = "Predicted Value\n",
-    title = NULL, leg.name = "Scenario", leg.labels = NULL,
-    legend = "legend")
+dynsimGG(obj, lsize = 1, color = NULL, alpha = 0.5, xlab = "\\nTime",
+  ylab = "Predicted Value\\n", title = NULL, leg.name = "Scenario",
+  leg.labels = NULL, legend = "legend", shockplot = FALSE,
+  shockplot.var = NULL, shockplot.ylab = NULL)
 }
 \arguments{
-  \item{obj}{a \code{Dynsim} class object.}
+  \item{obj}{a \code{dynsim} class object.}
 
   \item{lsize}{size of the smoothing line. Default is 1.
   See \code{\link{ggplot2}}.}
@@ -23,7 +23,7 @@
   \code{\link{scale_colour_brewer}}.}
 
   \item{alpha}{numeric. Alpha (e.g. transparency) for the
-  points or ribbons. Default is \code{alpha = 0.1}. See
+  ribbons. Default is \code{alpha = 0.1}. See
   \code{\link{ggplot2}}.}
 
   \item{xlab}{a label for the plot's x-axis.}
@@ -41,20 +41,30 @@
 
   \item{leg.labels}{character vector specifying the labels
   for each scenario in the legend.}
+
+  \item{shockplot}{logical. If \code{TRUE} then the values
+  of the fitted shock variable over time specified in
+  \code{shockplot.var} will be plotted underneath the main
+  plot.}
+
+  \item{shockplot.var}{character string naming the one
+  shock variable to plot if \code{shockplot = TRUE}.}
+
+  \item{shockplot.ylab}{a label for the shockplot's
+  y-axis.}
 }
 \description{
-  \code{dynsimGG} uses \code{\link{ggplot2}} to plot
-  dynamic simulation results created by
-  \code{\link{Dynsim}}.
+\code{dynsimGG} uses \code{\link{ggplot2}} to plot dynamic
+simulation results created by \code{\link{dynsim}}.
 }
 \details{
-  Plots dynamic simulations of autoregressive relationships
-  from \code{\link{Dynsim}}. The central line is the mean
-  of the simulation distributions. The outer ribbon is the
-  furthest extent of the simulation distributions' central
-  intervals found in \code{\link{Dynsim}} with the
-  \code{sig} argument. The middle ribbons plot the limits
-  of the simulation distributions' central 50% intervals.
+Plots dynamic simulations of autoregressive relationships
+from \code{\link{dynsim}}. The central line is the mean of
+the simulation distributions. The outer ribbon is the
+furthest extent of the simulation distributions' central
+intervals found in \code{\link{dynsim}} with the \code{sig}
+argument. The middle ribbons plot the limits of the
+simulation distributions' central 50% intervals.
 }
 \examples{
 # Load packages
@@ -72,13 +82,13 @@ grunfeld <- slide(grunfeld, Var = "invest", GroupVar = "company",
 M1 <- zelig(invest ~ InvestLag + mvalue + kstock,
             model = "ls", data = grunfeld, cite = FALSE)
 
-# Set up a scenario
+# Set up scenarios
 attach(grunfeld)
-Scen1 <- data.frame(invest = 317, InvestLag = mean(InvestLag, na.rm = TRUE),
+Scen1 <- data.frame(InvestLag = mean(InvestLag, na.rm = TRUE),
                     mvalue = quantile(mvalue, 0.05), kstock = quantile(kstock, 0.05))
-Scen2 <- data.frame(invest = 100, InvestLag = mean(InvestLag, na.rm = TRUE),
+Scen2 <- data.frame(InvestLag = mean(InvestLag, na.rm = TRUE),
                     mvalue = mean(mvalue), kstock = mean(kstock))
-Scen3 <- data.frame(invest = 317, InvestLag = mean(InvestLag, na.rm = TRUE),
+Scen3 <- data.frame(InvestLag = mean(InvestLag, na.rm = TRUE),
                     mvalue = quantile(mvalue, 0.95), kstock = quantile(kstock, 0.95))
 detach(grunfeld)
 
@@ -86,7 +96,7 @@ detach(grunfeld)
 ScenComb <- list(Scen1, Scen2, Scen3)
 
 ## Run dynamic simulations without shocks
-Sim1 <- Dynsim(obj = M1, ldv = "InvestLag", scen = ScenComb, n = 20)
+Sim1 <- dynsim(obj = M1, ldv = "InvestLag", scen = ScenComb, n = 20)
 
 # Create plot legend label
 Labels <- c("5th Percentile", "Mean", "95th Percentile")
@@ -100,10 +110,13 @@ dynsimGG(Sim1, leg.labels = Labels)
 mShocks <- data.frame(times = c(5, 10), kstock = c(100, 1000))
 
 # Run simulations
-Sim2 <- Dynsim(obj = M1, ldv = "InvestLag", scen = ScenComb, n = 20,
+Sim2 <- dynsim(obj = M1, ldv = "InvestLag", scen = ScenComb, n = 20,
                shocks = mShocks)
 
 # Plot
 dynsimGG(Sim2, leg.labels = Labels)
+
+# Plot with accompanying shock plot
+dynsimGG(Sim2, leg.labels = Labels, shockplot.var = "kstock")
 }
 
