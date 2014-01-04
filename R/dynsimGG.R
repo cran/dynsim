@@ -12,8 +12,7 @@
 #' @param leg.name name of the legend (if applicable).
 #' @param legend specifies what type of legend to include (if applicable). The default is \code{legend = "legend"}. To hide the legend use \code{legend = FALSE}. See \code{\link{discrete_scale}} for more details.
 #' @param leg.labels character vector specifying the labels for each scenario in the legend. 
-#' @param shockplot logical. If \code{TRUE} then the values of the fitted shock variable over time specified in \code{shockplot.var} will be plotted underneath the main plot. 
-#' @param shockplot.var character string naming the one shock variable to plot if \code{shockplot = TRUE}.
+#' @param shockplot.var character string naming the one shock variable to plot fitted values of over time specified underneath the main plot. 
 #' @param shockplot.ylab a label for the shockplot's y-axis.
 #'
 #' @details Plots dynamic simulations of autoregressive relationships from \code{\link{dynsim}}. The central line is the mean of the simulation distributions. The outer ribbon is the furthest extent of the simulation distributions' central intervals found in \code{\link{dynsim}} with the \code{sig} argument. The middle ribbons plot the limits of the simulation distributions' central 50% intervals.
@@ -73,10 +72,11 @@
 #'
 #' @import ggplot2
 #' @importFrom gridExtra grid.arrange
+#' @importFrom gridExtra arrangeGrob
 #'
 #' @export
 
-dynsimGG <- function(obj, lsize = 1, color = NULL, alpha = 0.5, xlab = "\nTime", ylab = "Predicted Value\n", title = NULL, leg.name = "Scenario", leg.labels = NULL, legend = "legend", shockplot = FALSE, shockplot.var = NULL, shockplot.ylab = NULL){
+dynsimGG <- function(obj, lsize = 1, color = NULL, alpha = 0.5, xlab = "\nTime", ylab = "Predicted Value\n", title = NULL, leg.name = "Scenario", leg.labels = NULL, legend = "legend", shockplot.var = NULL, shockplot.ylab = NULL){
 	# CRAN requirements
 	ldvMean <- ldvLower <- ldvUpper <- ldvLower50 <- ldvUpper50 <- scenNumber <- shockvar <- NULL
 
@@ -104,8 +104,8 @@ dynsimGG <- function(obj, lsize = 1, color = NULL, alpha = 0.5, xlab = "\nTime",
 			        ggtitle(title) +
 			        theme_bw(base_size = 15)
 		# Add shock fitted value plot
-		if (isTRUE(shockplot)){
-		  if (is.null(shockplot.var) | length(shockplot.var) > 1){
+		if (!is.null(shockplot.var)){
+		  if (length(shockplot.var) > 1){
 		    stop("You must specify ONE shock variable to plot with the shockplot.var argument.")
 		  }
 		  if (is.null(shockplot.ylab)){
@@ -122,7 +122,7 @@ dynsimGG <- function(obj, lsize = 1, color = NULL, alpha = 0.5, xlab = "\nTime",
 		  ShockPlot <- ggplot(shockplot.df, aes(time, shockvar)) + 
 		    geom_line(colour = color) +
 		    ylab(shockplot.ylab) + xlab("") +
-		    theme_bw(base_size = 15)
+		    theme_bw(base_size = 10)
 		  
 		  gA <- ggplotGrob(MainPlot)
 		  gB <- ggplotGrob(ShockPlot)
@@ -132,9 +132,9 @@ dynsimGG <- function(obj, lsize = 1, color = NULL, alpha = 0.5, xlab = "\nTime",
 		  gA$widths[2:5] <- as.list(maxWidth)
 		  gB$widths[2:5] <- as.list(maxWidth)
 		  
-		  grid.arrange(gA, gB, ncol = 1, heights = c(4, 1))
+		  grid.arrange(arrangeGrob(gA, gB, ncol = 1, heights = c(4, 1)))
 		}
-		else if (!isTRUE(shockplot)){
+		else if (is.null(shockplot.var)){
 		  MainPlot
 		}
 	}
@@ -156,8 +156,8 @@ dynsimGG <- function(obj, lsize = 1, color = NULL, alpha = 0.5, xlab = "\nTime",
 			        theme_bw(base_size = 15)
 	
     # Add shock fitted value plot
-    if (isTRUE(shockplot)){
-      if (is.null(shockplot.var) | length(shockplot.var) > 1){
+    if (!is.null(shockplot.var)){
+      if (length(shockplot.var) > 1){
         stop("You must specify ONE shock variable to plot with the shockplot.var argument.")
       }
 	  if (is.null(shockplot.ylab)){
@@ -175,7 +175,7 @@ dynsimGG <- function(obj, lsize = 1, color = NULL, alpha = 0.5, xlab = "\nTime",
         geom_line() +
         scale_colour_brewer(palette = color, guide = FALSE) +
         ylab(shockplot.ylab) + xlab("") +
-        theme_bw(base_size = 15)
+        theme_bw(base_size = 10)
       
       gA <- ggplotGrob(MainPlot)
       gB <- ggplotGrob(ShockPlot)
@@ -185,9 +185,9 @@ dynsimGG <- function(obj, lsize = 1, color = NULL, alpha = 0.5, xlab = "\nTime",
       gA$widths[2:5] <- as.list(maxWidth)
       gB$widths[2:5] <- as.list(maxWidth)
       
-      grid.arrange(gA, gB, ncol = 1, heights = c(4, 1))
+    grid.arrange(arrangeGrob(gA, gB, ncol = 1, heights = c(4, 1)))
     }
-    else if (!isTRUE(shockplot)){
+		else if (is.null(shockplot.var)){
       MainPlot
     }
 	}
