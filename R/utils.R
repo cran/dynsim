@@ -3,11 +3,12 @@
 #' \code{OneScen} is an internal function to dynamically simulate one scenario.
 #'
 #' @importFrom MASS mvrnorm
+#' @importFrom stats coef quantile vcov
 #'
 #' @keywords internals
 #' @noRd
 
-OneScen <- function(obj, ldv, n, scen, sig, num, shocks, forecast){
+OneScen <- function(obj, ldv, n, scen, sig, num, shocks){
     # CRAN requirements
     times <- sigma.sqr <- alpha.sqr <- NULL
 
@@ -20,34 +21,37 @@ OneScen <- function(obj, ldv, n, scen, sig, num, shocks, forecast){
     ShockVals <- data.frame()
 
     # Change data frame for shock values
-    for (i in 1:n){
-        if (is.null(shocks)){
+    for (i in 1:n) {
+        if (is.null(shocks))  {
             scenTemp <- scen
         }
-        else if (!is.null(shocks)){
-            if (i %in% shocks[, "times"]){
+        else if (!is.null(shocks)) {
+            if (i %in% shocks[, "times"]) {
                 scenTemp <- scen
-                for (x in names(shocks)[-1]){
+                for (x in names(shocks)[-1]) {
                     shocksTemp <- subset(shocks, times == i)
                     scenTemp[, x] <- shocksTemp[1, x]
                 }
             }
-            else if (!(i %in% shocks)){
+            else if (!(i %in% shocks)) {
                 scenTemp <- scen
             }
         }
 
         # Parameter estimates & Variance/Covariance matrix
-        Coef <- matrix(obj$coefficients)
+        Coef <- coef(obj)
         VC <- vcov(obj)
 
         # Draw covariate estimates from the multivariate normal distribution
         Drawn <- mvrnorm(n = num, mu = Coef, Sigma = VC)
         DrawnDF <- data.frame(Drawn)
 
+        ##### The intercept
+        #names(DrawnDF) <- names(scenTemp)
+
         # Find predicted value
         qiDF <- data.frame(DrawnDF[, 1]) # keep the intercept
-        for (u in names(scenTemp)){
+        for (u in names(scenTemp)) {
             qiDF[, u] <- DrawnDF[, u] * scenTemp[, u]
         }
         PV <- rowSums(qiDF)
@@ -56,25 +60,13 @@ OneScen <- function(obj, ldv, n, scen, sig, num, shocks, forecast){
         time <- i
         ldvMean <- mean(PV)
 
-        if (is.null(forecast)){
-            ldvLower <- quantile(PV, prob = Bottom, names = FALSE)
-            ldvUpper <- quantile(PV, prob = Top, names = FALSE)
-            ldvLower50 <- quantile(PV, prob = 0.25, names = FALSE)
-            ldvUpper50 <-quantile(PV, prob = 0.75, names = FALSE)
-        }
-        else if (!is.null(forecast)){
-            sigma.sqrDF <-
-            alpha.sqrDF <-
-            if (forecast == "ag"){
-
-            iMinusOne <- i - 1
-            se <- sqrt(sigma.sqr *  (1 * iMinusOne * sigma.sqr * alpha.sqr))
-
-            }
-        }
+        ldvLower <- quantile(PV, prob = Bottom, names = FALSE)
+        ldvUpper <- quantile(PV, prob = Top, names = FALSE)
+        ldvLower50 <- quantile(PV, prob = 0.25, names = FALSE)
+        ldvUpper50 <- quantile(PV, prob = 0.75, names = FALSE)
 
         # Shock variable values
-        if (!is.null(shocks)){
+        if (!is.null(shocks)) {
             ShockNames <- names(shocks)[-1]
             TempShock <- scenTemp[, ShockNames]
             ShockVals <- rbind(ShockVals, TempShock)
@@ -88,7 +80,7 @@ OneScen <- function(obj, ldv, n, scen, sig, num, shocks, forecast){
             scen[, ldv] <- ldvMean
     }
     # Clean up shocks
-    if (!is.null(shocks)){
+    if (!is.null(shocks)) {
         CleanNames <- paste0("shock.", ShockNames)
         names(ShockVals) <- CleanNames
         SimSum <- cbind(ShockVals, SimSum)
