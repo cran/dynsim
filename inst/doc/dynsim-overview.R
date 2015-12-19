@@ -13,8 +13,8 @@ data(grunfeld, package = "dynsim")
 ## ----tidy=FALSE, message=FALSE--------------------------------------
 library(DataCombine)
 
-grunfeld <- slide(grunfeld, Var = "invest", GroupVar = "company",
-               NewVar = "InvestLag")
+grunfeld <- slide(grunfeld, Var = "invest", GroupVar = "company", 
+                  TimeVar = "year", NewVar = "InvestLag")
 
 ## ----tidy=FALSE, echo=TRUE, message=FALSE, warning=FALSE------------
 M1 <- lm(invest ~ InvestLag + mvalue + kstock, data = grunfeld)
