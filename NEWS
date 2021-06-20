@@ -1,6 +1,14 @@
+## Version 1.2.3
+
+- No longer builds .Rnw vignettes to pass CRAN check
+
+## Version 1.2.2
+
+- No longer hard code `base_size` (font size) in `dynsimGG`.
+
 ## Version 1.2.1
 
-- Minor internal changes to work with ggplot2 2.0.0.
+- Minor internal changes to work with ggplot2 version 2.0.0.
 
 ## Version 1.2
 

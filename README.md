@@ -3,20 +3,17 @@ dynsim
 
 ### Dynamic Simulations of Autoregressive Relationships
 
-**Version 1.2.1**
-[![CRAN Version](http://www.r-pkg.org/badges/version/dynsim)](http://cran.r-project.org/package=dynsim)
+**Version 1.2.3**
+[![CRAN Version](http://www.r-pkg.org/badges/version/dynsim)](https://CRAN.R-project.org/package=dynsim) ![CRAN Downloads](http://cranlogs.r-pkg.org/badges/last-month/dynsim)
+![CRAN Total Downloads](http://cranlogs.r-pkg.org/badges/grand-total/dynsim)
+[![R-CMD-check](https://github.com/christophergandrud/dynsim/workflows/R-CMD-check/badge.svg)](https://github.com/christophergandrud/dynsim/actions)
 
-[![Build Status](https://travis-ci.org/christophergandrud/dynsim.png)](https://travis-ci.org/christophergandrud/dynsim)
-
-##### [Christopher Gandrud](http://christophergandrud.blogspot.com/p/biocontact.html),
-Laron K Williams, and Guy D Whitten
+**Christopher Gandrud, Laron K Williams, and Guy D Whitten**
 
 ## About
 
 The **dynsim** package implements Williams and Whitten's
-([2011](http://www.stata-journal.com/article.html?article=st0242), [2012](http://web.missouri.edu/~williamslaro/Williams%20and%20Whitten%202012.pdf))
-
-method for dynamic simulations of autoregressive relationships in R.
+([2011](https://www.stata-journal.com/article.html?article=st0242), [2012](http://web.missouri.edu/~williamslaro/Williams%20and%20Whitten%202012.pdf)) method for dynamic simulations of autoregressive relationships in R.
 
 ## Process
 
@@ -36,15 +33,15 @@ function.
 ## Examples
 
 For examples please visit
-[http://christophergandrud.github.io/dynsim/](http://christophergandrud.github.io/dynsim/).
+[https://christophergandrud.github.io/dynsim/](https://christophergandrud.github.io/dynsim/).
 
 ## Install
 
 **dynsim** is available on
-[CRAN](http://cran.r-project.org/package=dynsim)
+[CRAN](https://cran.r-project.org/package=dynsim)
 
 You can also easily install the latest development version with the
-[devtools](http://cran.r-project.org/package=devtools) package:
+*devtools* package:
 
 ```{S}
 devtools::install_github("christophergandrud/dynsim")
